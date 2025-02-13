@@ -139,13 +139,21 @@ namespace NZWalks.API.Controllers
         [HttpPost]
         public async Task<IActionResult> Create([FromBody] AddReqionRequestDto addReqionRequestDto)
         {
-            var regionDomainModel = mapper.Map<Region>(addReqionRequestDto); // Using AutoMapper
+            if (ModelState.IsValid)
+            {
+                var regionDomainModel = mapper.Map<Region>(addReqionRequestDto); // Using AutoMapper
 
-            regionDomainModel = await regionRepository.CreateAsync(regionDomainModel);
+                regionDomainModel = await regionRepository.CreateAsync(regionDomainModel);
 
-            var regionDto = mapper.Map<RegionDto>(regionDomainModel); // Using AutoMapper
+                var regionDto = mapper.Map<RegionDto>(regionDomainModel); // Using AutoMapper
 
-            return CreatedAtAction(nameof(GetById), new { id = regionDto.Id }, regionDto);
+                return CreatedAtAction(nameof(GetById), new { id = regionDto.Id }, regionDto);
+            }
+            else
+            {
+                return BadRequest(ModelState);
+            }
+            
         }
 
         //Update Region
@@ -191,17 +199,24 @@ namespace NZWalks.API.Controllers
         [Route("{id:Guid}")] // :Guid is added to make it as typeSafe
         public async Task<IActionResult> Update([FromRoute] Guid id, [FromBody] UpdateReqionRequestDto updateReqionRequestDto)
         {
-            //Map DTO to Domain Using AutoMapper
-            var regionDomain = mapper.Map<Region>(updateReqionRequestDto);
-
-            var regionDomaimModel = await regionRepository.UpdateAsync(id, regionDomain); // Calling Repositary
-            if (regionDomaimModel == null)
+            if (ModelState.IsValid)
             {
-                return NotFound();
+                //Map DTO to Domain Using AutoMapper
+                var regionDomain = mapper.Map<Region>(updateReqionRequestDto);
+
+                var regionDomaimModel = await regionRepository.UpdateAsync(id, regionDomain); // Calling Repositary
+                if (regionDomaimModel == null)
+                {
+                    return NotFound();
+                }
+                //Convert Domain to DTO   Using AutoMapper
+                var regionDto = mapper.Map<RegionDto>(regionDomaimModel);
+                return Ok(regionDto);
             }
-            //Convert Domain to DTO   Using AutoMapper
-            var regionDto = mapper.Map<RegionDto>(regionDomaimModel);
-            return Ok(regionDto);
+            else
+            {
+                return BadRequest(ModelState);
+            }
         }
 
         //Delete Region
