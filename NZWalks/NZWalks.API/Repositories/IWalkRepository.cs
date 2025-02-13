@@ -1,4 +1,5 @@
-﻿using NZWalks.API.Models.Domain;
+﻿using Microsoft.AspNetCore.Mvc;
+using NZWalks.API.Models.Domain;
 
 namespace NZWalks.API.Repositories
 {
@@ -9,5 +10,6 @@ namespace NZWalks.API.Repositories
         Task<Walk?> GetByIdAsync(Guid Id);
         Task<Walk?> UpdateAsync(Guid id, Walk walk);
         Task<Walk?> DeleteAsync(Guid id);
+        Task<List<Walk>> GetAllFilter(string? filterOn = null,string? filterQuery = null);
     }
 }
