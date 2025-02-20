@@ -12,7 +12,6 @@ namespace NZWalks.API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    [Authorize]
     public class RegionsController : ControllerBase
     {
         public readonly NZWalksDBContext dbContext;
@@ -57,6 +56,8 @@ namespace NZWalks.API.Controllers
         //GET ALL REGIONS
         //GET: https://localhost:portnumber/api/regions
         [HttpGet]
+        [Authorize(Roles ="Reader")]
+
         public async Task<IActionResult> GetAll()
         {
             //Get data from DataBase - Domain Models
@@ -98,6 +99,7 @@ namespace NZWalks.API.Controllers
         //GET: https://localhost:portnumber/api/regions/{id}
         [HttpGet]
         [Route("{id}")]
+        [Authorize(Roles = "Reader")]
         public async Task<IActionResult> GetById(Guid id)
         {
             var regionDomain = await regionRepository.GetByIdAsync(id); // Using Repositary
@@ -139,6 +141,7 @@ namespace NZWalks.API.Controllers
         //POST to Create new Region
         //POST: https://localhost:portnumber/api/regions
         [HttpPost]
+        [Authorize(Roles = "Writer")]
         public async Task<IActionResult> Create([FromBody] AddReqionRequestDto addReqionRequestDto)
         {
             if (ModelState.IsValid)
@@ -199,6 +202,7 @@ namespace NZWalks.API.Controllers
         //PUT :  https://localhost:portnumber/api/regions/{id}
         [HttpPut]
         [Route("{id:Guid}")] // :Guid is added to make it as typeSafe
+        [Authorize(Roles = "Writer")]
         public async Task<IActionResult> Update([FromRoute] Guid id, [FromBody] UpdateReqionRequestDto updateReqionRequestDto)
         {
             if (ModelState.IsValid)
@@ -250,6 +254,7 @@ namespace NZWalks.API.Controllers
         //DELETE: https://localhost:portnumber/api/regions/{id}
         [HttpDelete]
         [Route("{id:Guid}")]
+        [Authorize(Roles = "Writer,Reader")] // multiple Role also possible
         public async Task<IActionResult> Delete([FromRoute] Guid id)
         {
             var regionDomaimModel = await regionRepository.DeleteAsync(id);
