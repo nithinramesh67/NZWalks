@@ -42,6 +42,9 @@ namespace NZWalks.API.Controllers
             [FromQuery] string? sortBy, [FromQuery] bool? isAscending, [FromQuery] int pageNumber = 1, [FromQuery] int pageSize = 1000)
         {
             var walksDomainModel = await walkRepository.GetAllFilter(filterOn, filterQuery, sortBy, isAscending ?? true, pageNumber, pageSize);
+
+                //create an exception - to observe Global Exception :
+            //throw new Exception("this is a new exception");
             return Ok(mapper.Map<List<WalkDTO>>(walksDomainModel));
         }
 
