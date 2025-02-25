@@ -7,6 +7,7 @@ using NZWalks.API.Data;
 using NZWalks.API.Models.Domain;
 using NZWalks.API.Models.DTO;
 using NZWalks.API.Repositories;
+using System.Text.Json;
 
 namespace NZWalks.API.Controllers
 {
@@ -18,12 +19,15 @@ namespace NZWalks.API.Controllers
 
         public readonly IRegionRepository regionRepository;
         private readonly IMapper mapper;
+        private readonly ILogger<RegionsController> logger;
 
-        public RegionsController(NZWalksDBContext dbContext, IRegionRepository regionRepository, IMapper mapper)
+        public RegionsController(NZWalksDBContext dbContext, IRegionRepository regionRepository, 
+            IMapper mapper,ILogger<RegionsController> logger)
         {
             this.dbContext = dbContext;
             this.regionRepository = regionRepository;
             this.mapper = mapper;
+            this.logger = logger;
         }
 
 
@@ -56,14 +60,21 @@ namespace NZWalks.API.Controllers
         //GET ALL REGIONS
         //GET: https://localhost:portnumber/api/regions
         [HttpGet]
-        [Authorize(Roles ="Reader")]
+        //[Authorize(Roles ="Reader")]
 
         public async Task<IActionResult> GetAll()
         {
+            logger.LogInformation("GetAll method was invoked");
+
+            logger.LogWarning("This was warning");
+
+            logger.LogError("This was error");
+
             //Get data from DataBase - Domain Models
             var regionDomain = await regionRepository.GetAllAsync();        // Using Repositary
 
             //Return DTOs back to client                                    // Auto Mapper
+            logger.LogInformation($"Finished GetAll regions request data: {JsonSerializer.Serialize(regionDomain)}");
             return Ok(mapper.Map<List<RegionDto>>(regionDomain));           // var regionsDto = mapper.Map<List<RegionDto>>(regionDomain);
         }
 
