@@ -18,6 +18,7 @@ var builder = WebApplication.CreateBuilder(args);
  */
 var logger = new LoggerConfiguration()
     .WriteTo.Console()
+    .WriteTo.File("Logs/NZWalks_Log.txt",rollingInterval: RollingInterval.Minute)  // for file log need to install Serilog.Sinks.File 
     .MinimumLevel.Information()
     .CreateLogger();
 
